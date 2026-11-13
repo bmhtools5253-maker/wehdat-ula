@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>التمرين على اللسان العربي المبين</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a4d2e;
+      --secondary: #4f6f52;
+      --accent: #d4a373;
+      --bg: #f8f9fa;
+      --card: #ffffff;
+      --text: #1f2937;
+    }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.7;
+    }
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+    .header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 28px;
+      border-radius: 14px;
+      text-align: center;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .header h1 {
+      margin: 0 0 8px;
+      font-family: 'Amiri', serif;
+      font-size: 2.2rem;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 22px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-top: 4px solid var(--primary);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+    .card-header h2 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 1.35rem;
+    }
+    .badge {
+      background: #e6f4ea;
+      color: var(--primary);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 14px;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.15rem;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .student-banner {
+      margin-top: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      display: none;
+    }
+    .student-valid {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+    }
+    .student-invalid {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+    .vocab-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .vocab-pill {
+      background: #fdf8f5;
+      border: 1px solid #d4a373;
+      color: #7c3f1d;
+      padding: 8px 18px;
+      border-radius: 24px;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+    .recorder-box {
+      background: #f8fafc;
+      border: 1px dashed #94a3b8;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 16px;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 4px;
+      transition: 0.2s;
+    }
+    .btn-record { background: #dc2626; color: white; }
+    .btn-stop { background: #334155; color: white; }
+    .btn-submit {
+      background: var(--primary);
+      color: white;
+      width: 100%;
+      padding: 14px;
+      font-size: 1.15rem;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .timer {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #dc2626;
+      margin: 8px 0;
+    }
+    .mcq-item {
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .mcq-question {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    .mcq-options label {
+      display: inline-block;
+      margin-left: 18px;
+      font-weight: 400;
+      cursor: pointer;
+      background: #f1f5f9;
+      padding: 6px 14px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+    .mcq-options input { margin-left: 6px; }
+    #resultCard {
+      display: none;
+      border-top: 5px solid #16a34a;
+    }
+    .score-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      text-align: center;
+      margin: 16px 0;
+    }
+    @media (max-width: 600px) {
+      .score-summary { grid-template-columns: 1fr 1fr; }
+    }
+    .score-pill {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 12px;
+      border-radius: 8px;
+    }
+    .score-pill span {
+      display: block;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #15803d;
+    }
+    .feedback-box {
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 10px;
+      border-right: 4px solid var(--primary);
+    }
+    .feedback-en {
+      direction: ltr;
+      text-align: left;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
+      font-family: sans-serif;
+    }
+    .loader {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>التَّمْرِينُ عَلَى اللِّسَانِ الْعَرَبِيِّ الْمُبِينِ</h1>
+    <div>سلسلة التكلّم — تقييم الدرجة الأولى (المجموع الكلي: 30 درجة)</div>
+  </div>
+
+  <!-- Student TR Input -->
+  <div class="card">
+    <div class="card-header">
+      <h2>التحقق من بيانات الطالب / الطالبة</h2>
+    </div>
+    <label for="trInput">أدخل رقم السجل (TR Number) فقط:</label>
+    <input type="text" id="trInput" placeholder="مثال: 29222" oninput="lookupStudent()" maxlength="6">
+    <div id="studentBanner" class="student-banner"></div>
+  </div>
+
+  <!-- Section 1: Speaking (20 Marks) -->
+  <div class="card">
+    <div class="card-header">
+      <h2>أولاً: التَّحَدُّثُ بِاللُّغَةِ الْعَرَبِيَّةِ (تسجيل صوتي)</h2>
+      <span class="badge">20 درجة</span>
+    </div>
+    <p><strong>السؤال:</strong> تَحَدَّثْ عَنْ نَفْسِكَ مُسْتَخْدِمًا الْمُفْرَدَاتِ التَّالِيَةَ:</p>
+    
+    <div class="vocab-pills">
+      <span class="vocab-pill">الْبَلَدُ</span>
+      <span class="vocab-pill">الْجِنْسِيَّةُ</span>
+      <span class="vocab-pill">رَقْمُ الْهَاتِفِ</span>
+      <span class="vocab-pill">الْوَظِيفَةُ</span>
+      <span class="vocab-pill">الْعُنْوَانُ</span>
+      <span class="vocab-pill">الْبَرِيدُ الْإِلِكْتْرُونِيُّ</span>
+    </div>
+
+    <p style="font-size: 0.92rem; color: #475569;"><strong>معيار التقييم:</strong> مدة التحدث الكاملة وطلاقة اللسان وسلامة النطق باللغة العربية الفصيحة.</p>
+
+    <div class="recorder-box">
+      <div>سجّل إجابتك باللغة العربية الفصيحة (المدة المستهدفة: 30 ثانية):</div>
+      <div class="timer" id="timer1">00:30</div>
+      <button class="btn btn-record" id="recBtn1" onclick="startRecording(30)">🎙️ ابدأ التسجيل</button>
+      <button class="btn btn-stop" id="stopBtn1" onclick="stopRecording()" disabled>⏹️ إيقاف</button>
+      <div style="margin-top:10px;">
+        <audio id="audioPlayback1" controls style="display:none; width:100%;"></audio>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: MCQs Set 1 (5 Marks) -->
+  <div class="card">
+    <div class="card-header">
+      <h2>ثانياً: ضَعْ أَدَاةَ الِاسْتِفْهَامِ فِي الْمَكَانِ الْمُنَاسِبِ</h2>
+      <span class="badge">5 درجات</span>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-question">١. .......... جِنْسِيَّتُكَ؟ أَنَا أَمْرِيكِيٌّ.</div>
+      <div class="mcq-options">
+        <label><input type="radio" name="q1" value="مَا"> مَا</label>
+        <label><input type="radio" name="q1" value="مِنْ أَيْنَ"> مِنْ أَيْنَ</label>
+        <label><input type="radio" name="q1" value="كَيْفَ"> كَيْفَ</label>
+        <label><input type="radio" name="q1" value="هَلْ"> هَلْ</label>
+      </div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-question">٢. .......... صَدِيقُكَ؟ هُوَ بِخَيْرٍ.</div>
+      <div class="mcq-options">
+        <label><input type="radio" name="q2" value="أَيْنَ"> أَيْنَ</label>
+        <label><input type="radio" name="q2" value="كَيْفَ"> كَيْفَ</label>
+        <label><input type="radio" name="q2" value="مَاذَا"> مَاذَا</label>
+        <label><input type="radio" name="q2" value="مَا"> مَا</label>
+      </div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-question">٣. .......... عَبْدُ اللَّهِ؟ هُوَ مِنَ السُّعُودِيَّةِ.</div>
+      <div class="mcq-options">
+        <label><input type="radio" name="q3" value="مِنْ أَيْنَ"> مِنْ أَيْنَ</label>
+        <label><input type="radio" name="q3" value="أَيْنَ"> أَيْنَ</label>
+        <label><input type="radio" name="q3" value="هَلْ"> هَلْ</label>
+        <label><input type="radio" name="q3" value="مَاذَا"> مَاذَا</label>
+      </div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-question">٤. .......... تَعْمَلُ؟ فِي الرِّيَاضِ.</div>
+      <div class="mcq-options">
+        <label><input type="radio" name="q4" value="مَاذَا"> مَاذَا</label>
+        <label><input type="radio" name="q4" value="أَيْنَ"> أَيْنَ</label>
+        <label><input type="radio" name="q4" value="كَيْفَ"> كَيْفَ</label>
+        <label><input type="radio" name="q4" value="مِنْ أَيْنَ"> مِنْ أَيْنَ</label>
+      </div>
+    </div>
+
+    <div class="mcq-item" style="border:none;">
+      <div class="mcq-question">٥. .......... تَعْمَلُ؟ أَعْمَلُ مُهَنْدِسًا.</div>
+      <div class="mcq-options">
+        <label><input type="radio" name="q5" value="هَلْ"> هَلْ</label>
+        <label><input type="radio" name="q5" value="مَاذَا"> مَاذَا</label>
+        <label><input type="radio" name="q5" value="أَيْنَ"> أَيْنَ</label>
+        <label><input type="radio" name="q5" value="كَيْفَ"> كَيْفَ</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: MCQs Set 2 - Present Tense with Singular Pronouns (5 Marks) -->
+  <div class="card">
+    <div class="card-header">
+      <h2>ثالثاً: الْفِعْلُ الْمُضَارِعُ مَعَ ضَمَائِرِ الْمُفْرَدِ</h2>
+      <span class="badge">5 درجات</span>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-question">١. أَنَا .......... مُتَرْجِمًا.</div>
+      <div class="mcq-options">
+        <label><input type="radio" name="q6" value="أَعْمَلُ"> أَعْمَلُ</label>
+        <label><input type="radio" name="q6" value="تَعْمَلُ"> تَعْمَلُ</label>
+        <label><input type="radio" name="q6" value="يَعْمَلُ"> يَعْمَلُ</label>
+        <label><input type="radio" name="q6" value="تَعْمَلِينَ"> تَعْمَلِينَ</label>
+      </div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-question">٢. أَنْتَ .......... مُتَرْجِمًا.</div>
+      <div class="mcq-options">
+        <label><input type="radio" name="q7" value="أَعْمَلُ"> أَعْمَلُ</label>
+        <label><input type="radio" name="q7" value="تَعْمَلُ"> تَعْمَلُ</label>
+        <label><input type="radio" name="q7" value="يَعْمَلُ"> يَعْمَلُ</label>
+        <label><input type="radio" name="q7" value="تَعْمَلِينَ"> تَعْمَلِينَ</label>
+      </div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-question">٣. أَنْتِ .......... مُتَرْجِمَةً.</div>
+      <div class="mcq-options">
+        <label><input type="radio" name="q8" value="تَعْمَلُ"> تَعْمَلُ</label>
+        <label><input type="radio" name="q8" value="أَعْمَلُ"> أَعْمَلُ</label>
+        <label><input type="radio" name="q8" value="تَعْمَلِينَ"> تَعْمَلِينَ</label>
+        <label><input type="radio" name="q8" value="يَعْمَلُ"> يَعْمَلُ</label>
+      </div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-question">٤. هُوَ .......... مُتَرْجِمًا.</div>
+      <div class="mcq-options">
+        <label><input type="radio" name="q9" value="تَعْمَلُ"> تَعْمَلُ</label>
+        <label><input type="radio" name="q9" value="أَعْمَلُ"> أَعْمَلُ</label>
+        <label><input type="radio" name="q9" value="تَعْمَلِينَ"> تَعْمَلِينَ</label>
+        <label><input type="radio" name="q9" value="يَعْمَلُ"> يَعْمَلُ</label>
+      </div>
+    </div>
+
+    <div class="mcq-item" style="border:none;">
+      <div class="mcq-question">٥. هِيَ .......... مُتَرْجِمَةً.</div>
+      <div class="mcq-options">
+        <label><input type="radio" name="q10" value="يَعْمَلُ"> يَعْمَلُ</label>
+        <label><input type="radio" name="q10" value="أَعْمَلُ"> أَعْمَلُ</label>
+        <label><input type="radio" name="q10" value="تَعْمَلُ"> تَعْمَلُ</label>
+        <label><input type="radio" name="q10" value="تَعْمَلِينَ"> تَعْمَلِينَ</label>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-submit" id="submitBtn" onclick="submitForm()">إرسال الإجابات والتقييم الفوري (من 30)</button>
+  
+  <div class="loader" id="loader">⏳ جاري تحليل التسجيل الصوتي وتقييم مدة التحدث والطلاقة... يرجى الانتظار قليلاً</div>
+
+  <div class="card" id="resultCard">
+    <div class="card-header">
+      <h2 id="resultHeader">نتيجة التقييم النهائية</h2>
+      <span class="badge" id="finalBadge">0 / 30</span>
+    </div>
+    <div class="score-summary">
+      <div class="score-pill">التحدث (المدة والطلاقة)<span id="resSpeaking">0 / 20</span></div>
+      <div class="score-pill">أدوات الاستفهام<span id="resMcq1">0 / 5</span></div>
+      <div class="score-pill">ضمائر المفرد<span id="resMcq2">0 / 5</span></div>
+      <div class="score-pill">المجموع الكلي<span id="resTotal">0 / 30</span></div>
+    </div>
+    <div class="feedback-box">
+      <strong>ملاحظات التقييم (بالعربية):</strong>
+      <p id="fbArabic"></p>
+      <div class="feedback-en">
+        <strong>Evaluation Remarks (English):</strong>
+        <p id="fbEnglish"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW:
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGJE-JEDP2CPNTHsG0blwOdo3dZ3kaEhfMFSdGIcfciLGEl4NBpHg5z1rwFO4XDa5a7A/exec";
+
+  const STUDENTS_BY_TR = {
+    "29222": {name: "Abbas bhai Abdeali bhai Kothari", div: "1 A M"},
+    "29284": {name: "Abdullah bhai Mulla Shabbir bhai Amjherawala", div: "1 A M"},
+    "29205": {name: "Abizer bhai Taher bhai Motabhabharawala", div: "1 A M"},
+    "29278": {name: "Aliasgar bhai Mansoor bhai Adenwala", div: "1 A M"},
+    "29280": {name: "Ammar bhai Nasir bhai Gittham", div: "1 A M"},
+    "29416": {name: "Burhanuddin bhai Anwar bhai Pardawala", div: "1 A M"},
+    "29248": {name: "Burhanuddin bhai Huzaifa bhai Adil", div: "1 A M"},
+    "29319": {name: "Burhanuddin bhai Mulla Shabbir bhai Sanjeetwala", div: "1 A M"},
+    "29263": {name: "Burhanuddin bhai Mustafa bhai Batterywala", div: "1 A M"},
+    "29300": {name: "Burhanuddin bhai Shaikh Moiz bhai Kagalwala", div: "1 A M"},
+    "29302": {name: "Burhanuddin bhai Shaikh Qutubkhan bhai Badri", div: "1 A M"},
+    "29350": {name: "Burhanuddin bhai Yusuf bhai Kapasi", div: "1 A M"},
+    "29223": {name: "Fakhruddin bhai Murtaza bhai Ezzy", div: "1 A M"},
+    "29315": {name: "Haider bhai Hatim bhai Kheriwala", div: "1 A M"},
+    "29225": {name: "Haider bhai Mufaddal bhai Zakir", div: "1 A M"},
+    "29212": {name: "Husain bhai Mazahir bhai Birmawalwala", div: "1 A M"},
+    "29316": {name: "Husain bhai Mulla Huzaifa bhai Khokhawala", div: "1 A M"},
+    "29238": {name: "Juzer bhai Mufaddal bhai Sodawala", div: "1 A M"},
+    "29340": {name: "Mohammed bhai Mulla Shabbir bhai Mehsanawala", div: "1 A M"},
+    "29210": {name: "Moiz bhai Adnan bhai Kabuli", div: "1 A M"},
+    "29290": {name: "Mufaddal bhai Juzar bhai Saifee", div: "1 A M"},
+    "29215": {name: "Mufaddal bhai Mulla Shabbir bhai Chechatwala", div: "1 A M"},
+    "29257": {name: "Mustafa bhai Abdeali bhai Sanwala", div: "1 A M"},
+    "29199": {name: "Qaidjoher bhai Mustansir bhai Master", div: "1 A M"},
+    "29373": {name: "Qaidjoher bhai Shaikh Huzaifa bhai Hamid", div: "1 A M"},
+    "29422": {name: "Abdeali bhai Mulla Husain bhai Broachwalla", div: "1 B M"},
+    "29241": {name: "Adnan bhai Husain bhai Zaveri", div: "1 B M"},
+    "29276": {name: "Adnan bhai Kaidjohar bhai Hamid", div: "1 B M"},
+    "29269": {name: "Ali bhai Murtaza bhai Eranpurwala", div: "1 B M"},
+    "29309": {name: "Burhanuddin bhai Adnan bhai Babji", div: "1 B M"},
+    "29286": {name: "Burhanuddin bhai Fakhruddin bhai Kapadiya", div: "1 B M"},
+    "29349": {name: "Burhanuddin bhai Husain bhai Khokawala", div: "1 B M"},
+    "29250": {name: "Burhanuddin bhai Ibrahim bhai Lakdawala", div: "1 B M"},
+    "29251": {name: "Burhanuddin bhai Mulla Hussain bhai Ezzi", div: "1 B M"},
+    "29229": {name: "Hamza bhai Mustafa bhai Daruwala", div: "1 B M"},
+    "29271": {name: "Hatim bhai Huzaifa bhai Noble", div: "1 B M"},
+    "29218": {name: "Hussain bhai Moiz bhai Gandhi", div: "1 B M"},
+    "29264": {name: "Ibrahim bhai Mufaddal bhai Mama", div: "1 B M"},
+    "29314": {name: "Mohammed bhai Qaizar bhai Malvi", div: "1 B M"},
+    "29351": {name: "Mohammed bhai Shaikh Abduttayyib bhai Zaki (RAJA)", div: "1 B M"},
+    "29292": {name: "Mohammed bhai Shaikh Yusuf bhai Jamali", div: "1 B M"},
+    "29245": {name: "Moiz bhai Abdulqadir bhai Maldeviwala", div: "1 B M"},
+    "29207": {name: "Murtaza bhai Mustafa bhai Kohodawala", div: "1 B M"},
+    "29318": {name: "Mustafa bhai Shaikh Juzer bhai Hajee", div: "1 B M"},
+    "29219": {name: "Shabbir bhai Juzer bhai Ujjain Wala", div: "1 B M"},
+    "29201": {name: "Shabbir bhai Mohammadhussain bhai Bankoda", div: "1 B M"},
+    "29208": {name: "Taha bhai Murtaza bhai Tanda wala", div: "1 B M"},
+    "29374": {name: "Taikhum bhai Mulla Mufaddal bhai Amravatiwala", div: "1 B M"},
+    "29272": {name: "Uzair bhai Mulla Abbasali bhai Alimiyajiwala", div: "1 B M"},
+    "29247": {name: "Yahya bhai Mulla Yaseen bhai Maimoon (Parsola wala)", div: "1 B M"},
+    "29246": {name: "Adam bhai Husain bhai Ramakada", div: "1 C M"},
+    "29244": {name: "Adnan bhai Murtaza bhai Millwala", div: "1 C M"},
+    "29303": {name: "Burhanuddin bhai Aliasgar bhai Rampurawala", div: "1 C M"},
+    "29296": {name: "Burhanuddin bhai Alihusain bhai Laccha wala", div: "1 C M"},
+    "29255": {name: "Burhanuddin bhai Mufaddal bhai Kapasi(cochinwala)", div: "1 C M"},
+    "29221": {name: "Burhanuddin bhai Mulla Mustafa bhai Fatehi", div: "1 C M"},
+    "29311": {name: "Burhanuddin bhai Mustafa bhai Saifee (Dharampuriwala)", div: "1 C M"},
+    "29206": {name: "Burhanuddin bhai Quraish bhai Master", div: "1 C M"},
+    "29220": {name: "Husain bhai Ammar bhai Lakdawala", div: "1 C M"},
+    "29236": {name: "Husain bhai Huzaifa bhai Chakkiwala", div: "1 C M"},
+    "29371": {name: "Huzaifa bhai Shaikh Murtaza bhai Yamani", div: "1 C M"},
+    "29224": {name: "Ilyas bhai Mulla Juzer bhai Lokhandwala", div: "1 C M"},
+    "29235": {name: "Khuzaima bhai Idris bhai Daya", div: "1 C M"},
+    "29204": {name: "Mohammed bhai Huzaifa bhai Kawantwala", div: "1 C M"},
+    "29268": {name: "Mohammed bhai Shabbir bhai Sariya", div: "1 C M"},
+    "29317": {name: "Mohammed bhai Shaikh Adnan bhai Shakir", div: "1 C M"},
+    "29279": {name: "Mohammedulbaqir bhai Huzaifa bhai Aalwala", div: "1 C M"},
+    "29312": {name: "Mufaddal bhai Taher bhai Chaiwala", div: "1 C M"},
+    "29200": {name: "Saifuddin bhai Moiz bhai Saify", div: "1 C M"},
+    "29330": {name: "Shabbir bhai Juzer bhai Siamwala", div: "1 C M"},
+    "29256": {name: "Shabbir bhai Murtaza bhai Limdiwala", div: "1 C M"},
+    "29384": {name: "Taher bhai Aunali bhai Otlawala", div: "1 C M"},
+    "29214": {name: "Taher bhai Husain bhai Cementwala", div: "1 C M"},
+    "29305": {name: "Abdeali bhai Mulla Shabbir bhai Kagalwala", div: "1 D M"},
+    "29352": {name: "Abdullah bhai Mulla Mustafa bhai Najmi", div: "1 D M"},
+    "29260": {name: "Abdulqadir bhai Ibrahim bhai Chechatwala", div: "1 D M"},
+    "29372": {name: "Abdulqadir bhai Shaikh Murtaza bhai Yamani", div: "1 D M"},
+    "29232": {name: "Ali Asgar bhai Fakhruddin bhai Jawadwala", div: "1 D M"},
+    "29310": {name: "Ammar bhai Ahmed bhai Miyajiwala", div: "1 D M"},
+    "29289": {name: "Burhanuddin bhai Fakhruddin bhai Talwala", div: "1 D M"},
+    "29412": {name: "Burhanuddin bhai Shaikh Hatim bhai Ayman", div: "1 D M"},
+    "29322": {name: "Burhanuddin bhai Shaikh Huzefa bhai Ezzi", div: "1 D M"},
+    "29283": {name: "Burhanuddin bhai Taha bhai Mama", div: "1 D M"},
+    "29328": {name: "Hatim bhai Husain bhai Bajiwala", div: "1 D M"},
+    "29368": {name: "Hatim bhai Shaikh Mohammed bhai Bhopalwala", div: "1 D M"},
+    "29259": {name: "Husain bhai Abizer bhai Barnagar wala", div: "1 D M"},
+    "29329": {name: "Husain bhai Shaikh Huzaifa bhai Shakruwala", div: "1 D M"},
+    "29231": {name: "Ibrahim bhai Mulla Idrees bhai Ezzi", div: "1 D M"},
+    "29227": {name: "Luvai bhai Mufaddal bhai Durriewala", div: "1 D M"},
+    "29270": {name: "Malekulashter bhai Yunus bhai Tinwala", div: "1 D M"},
+    "29398": {name: "Miqdad bhai Shaikh Murtaza bhai Raj", div: "1 D M"},
+    "29277": {name: "Mufaddal bhai Qaidjoher bhai Saify", div: "1 D M"},
+    "29324": {name: "Mufaddal bhai Shaikh Ibnemadyan bhai Nakhuda", div: "1 D M"},
+    "29282": {name: "Murtaza bhai Shabbir bhai Khalapurwala", div: "1 D M"},
+    "29307": {name: "Shabbir bhai Murtaza bhai Rampurawala", div: "1 D M"},
+    "29273": {name: "Shabbir bhai Yusuf bhai Rangwala", div: "1 D M"},
+    "29327": {name: "Taher bhai Burhanuddin bhai Badwaniwala", div: "1 D M"},
+    "29358": {name: "Alefiya bai Taher bhai Morawala", div: "1 A F"},
+    "29337": {name: "Arwa bai Saifuddin bhai Khanbhai wala", div: "1 A F"},
+    "29217": {name: "Batul bai Husain bhai Dhanwala", div: "1 A F"},
+    "29342": {name: "Batul bai Mohammed bhai Dhuliawala", div: "1 A F"},
+    "29230": {name: "Batul bai Yusuf bhai Laheri", div: "1 A F"},
+    "29226": {name: "Farida bai Husain bhai Kapasi", div: "1 A F"},
+    "29228": {name: "Fatema bai Murtaza bhai Sagarwala", div: "1 A F"},
+    "29294": {name: "Fatema bai Shaikh Yusuf bhai Dalal", div: "1 A F"},
+    "29293": {name: "Husaina bai Abdulhusain bhai Badri", div: "1 A F"},
+    "29237": {name: "Insiya bai Mohammedali bhai Maheshwarwala", div: "1 A F"},
+    "29377": {name: "Insiyah bai Husain bhai Kanchwala", div: "1 A F"},
+    "29335": {name: "Insiyah bai Mulla Aliakbar bhai Sanjeliwala", div: "1 A F"},
+    "29365": {name: "Insiyah bai Shaikh Shabbir bhai Patanwala", div: "1 A F"},
+    "29267": {name: "Jamila bai Shabbirhusain bhai Bundi wala", div: "1 A F"},
+    "29243": {name: "Khadija bai Saifuddin bhai Antriwala", div: "1 A F"},
+    "29411": {name: "Rashida bn Mufaddal bs Zakavi", div: "1 A F"},
+    "29254": {name: "Rukaiya bai Yusuf bhai Madarwala", div: "1 A F"},
+    "29313": {name: "Ruqaiya bai Mulla Murtaza bhai Rampurawala", div: "1 A F"},
+    "29281": {name: "Ruqaiyah bai Murtaza bhai Hamid", div: "1 A F"},
+    "29366": {name: "Zainab bai Shaikh Mufaddal bhai Rampurawala", div: "1 A F"},
+    "29376": {name: "Amatullah bai Moiz bhai Ajanda", div: "1 B F"},
+    "29265": {name: "Amatullah bai Mulla Mustafa bhai Bhanpurawala", div: "1 B F"},
+    "29362": {name: "Arwa bai Mohammed bhai Ambawala", div: "1 B F"},
+    "29288": {name: "Batool bai Mulla Huzaifa bhai Kurawarwala", div: "1 B F"},
+    "29297": {name: "Batul bai Huzaifa bhai Naharwala", div: "1 B F"},
+    "29370": {name: "Batul bai Ilyas bhai Bhabrawala", div: "1 B F"},
+    "29369": {name: "Batul bai Shaikh Yusuf bhai Patanwala", div: "1 B F"},
+    "29213": {name: "Batul bai Yusufali bhai Khandwawala", div: "1 B F"},
+    "29298": {name: "Hawra bai Huzaifa bhai Dhamangamwala", div: "1 B F"},
+    "29233": {name: "Hawrah bai Aliasgar bhai Modi", div: "1 B F"},
+    "29258": {name: "Husaina bai Aliasgar bhai Sadikot", div: "1 B F"},
+    "29325": {name: "Husaina bai Mohammed bhai Sardiwala", div: "1 B F"},
+    "29285": {name: "Husaina bai Taher bhai Jarwala", div: "1 B F"},
+    "29346": {name: "Lubaina bai Mulla Moiz bhai Arsiwala", div: "1 B F"},
+    "29304": {name: "Nafisa bai Taiyeb bhai Burhani", div: "1 B F"},
+    "29275": {name: "Ramla bai Mufaddal bhai Badri", div: "1 B F"},
+    "29375": {name: "Zahra bai Husain bhai Madarwala", div: "1 B F"},
+    "29438": {name: "Zahra bai Shaikh Shabbir bhai Ziauddin", div: "1 B F"},
+    "29343": {name: "Zainab bai Burhanuddin bhai Mhowwala", div: "1 B F"},
+    "29308": {name: "Alefiya bai Kausar bhai Mandwarawala", div: "1 C F"},
+    "29361": {name: "Arwa bai Qutbuddin bhai Tandawala", div: "1 C F"},
+    "29326": {name: "Batul bai Adnan bhai Ranapurwala", div: "1 C F"},
+    "29202": {name: "Batul bai Mufaddal bhai Ezzi", div: "1 C F"},
+    "29367": {name: "Batul bai Yusuf bhai Barodiyawala", div: "1 C F"},
+    "29216": {name: "Batul bai Zulfaqar bhai Chakkiwala", div: "1 C F"},
+    "29209": {name: "Farida bai Huzaifa bhai Kanchwala", div: "1 C F"},
+    "29321": {name: "Husaina bai Mohammed bhai Rajpurwala", div: "1 C F"},
+    "29266": {name: "Insiya bai Altaf bhai Kalabhaiwala", div: "1 C F"},
+    "29299": {name: "Insiya bai Husain bhai Burhani", div: "1 C F"},
+    "29306": {name: "Insiyah bai Mufaddal bhai Javawala", div: "1 C F"},
+    "29211": {name: "Khadija bai Aliasgar bhai Chaiwala", div: "1 C F"},
+    "29333": {name: "Khadija bai Mulla Taher bhai Dawaiwala", div: "1 C F"},
+    "29348": {name: "Radiya bai Murtaza bhai Ezzi", div: "1 C F"},
+    "29439": {name: "Rashida bai Mulla Aliasgar bhai Barnagarwala", div: "1 C F"},
+    "29379": {name: "Rukayya bai Mustansir bhai Borlaiwala", div: "1 C F"},
+    "29378": {name: "Ruqaiyah bai Murtaza bhai Hamid", div: "1 C F"},
+    "29336": {name: "Umme Salama bai Mulla Huzaifa bhai Bhaiwala", div: "1 C F"},
+    "29240": {name: "Zahabiya bai Mufaddal bhai Shakir", div: "1 C F"},
+    "29301": {name: "Zainab bai Mohammed bhai Singapurwala", div: "1 C F"},
+    "29262": {name: "Amatullah bai Huzaifa bhai Mamajiwala", div: "1 D F"},
+    "29334": {name: "Amatullah bai Mulla Mufaddal bhai Manawarwala", div: "1 D F"},
+    "29261": {name: "Batul bai Husain bhai Rangat", div: "1 D F"},
+    "29359": {name: "Batul bai Yusuf bhai Fakkad", div: "1 D F"},
+    "29345": {name: "Batul bai Yusuf bhai Jawadwala", div: "1 D F"},
+    "29291": {name: "Husaina bai Mulla Qusai bhai Baranwala", div: "1 D F"},
+    "29323": {name: "Insiyah bai Badruddin bhai Bakrolwala", div: "1 D F"},
+    "29364": {name: "Jumana bai Sadiqali bhai Khandwawala", div: "1 D F"},
+    "29249": {name: "Lulua bai Qutbuddin bhai Roshan", div: "1 D F"},
+    "29234": {name: "Naqiyah bai Husain bhai Taskeen", div: "1 D F"},
+    "29287": {name: "Rukayya bai Abdulqadir bhai Haidery", div: "1 D F"},
+    "29363": {name: "Ruqaiyah bai Johar bhai Anis", div: "1 D F"},
+    "29347": {name: "Ruqaiyah bai Mustafa bhai Rampurawala", div: "1 D F"},
+    "29341": {name: "Tasneem bai Mustafa bhai Kachchawala", div: "1 D F"},
+    "29239": {name: "Ummehani bai Aliasgar bhai Chaiwala", div: "1 D F"},
+    "29320": {name: "Zahabiyah bai Mustafa bhai Bhanpurawala", div: "1 D F"},
+    "29242": {name: "Zahra bai Mufaddal bhai Khandwala", div: "1 D F"},
+    "29203": {name: "Zainab bai Mulla Murtaza bhai Lanewala", div: "1 D F"},
+    "29397": {name: "Zainab bai Shaikh Burhanuddin bhai Samiwala", div: "1 D F"}
+  };
+
+  let recorder = null;
+  let audioChunks = [];
+  let audioBlob = null;
+  let timer = null;
+  let recordedSeconds = 0;
+
+  function normalizeDigits(str) {
+    return str.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  }
+
+  function lookupStudent() {
+    const tr = normalizeDigits(document.getElementById('trInput').value.trim());
+    const banner = document.getElementById('studentBanner');
+    if (tr.length === 0) {
+      banner.style.display = 'none';
+      return;
+    }
+    const st = STUDENTS_BY_TR[tr];
+    banner.style.display = 'block';
+    if (st) {
+      banner.className = 'student-banner student-valid';
+      banner.innerText = `✅ الاسم: ${st.name}  |  الفصل: ${st.div}`;
+    } else {
+      banner.className = 'student-banner student-invalid';
+      banner.innerText = '❌ رقم السجل (TR) غير صحيح أو غير موجود في القائمة.';
+    }
+  }
+
+  async function startRecording(maxSeconds) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recorder = new MediaRecorder(stream);
+      audioChunks = [];
+      recordedSeconds = 0;
+
+      recorder.ondataavailable = e => {
+        if (e.data.size > 0) audioChunks.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const playback = document.getElementById('audioPlayback1');
+        playback.src = audioUrl;
+        playback.style.display = 'block';
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      recorder.start();
+      document.getElementById('recBtn1').disabled = true;
+      document.getElementById('stopBtn1').disabled = false;
+
+      let remaining = maxSeconds;
+      const timerEl = document.getElementById('timer1');
+      timerEl.innerText = `00:${remaining < 10 ? '0' + remaining : remaining}`;
+
+      timer = setInterval(() => {
+        remaining--;
+        recordedSeconds++;
+        timerEl.innerText = `00:${remaining < 10 ? '0' + remaining : remaining}`;
+        if (remaining <= 0) {
+          stopRecording();
+        }
+      }, 1000);
+
+    } catch (err) {
+      alert("Please click 'Allow' when your browser asks for Microphone permission.");
+    }
+  }
+
+  function stopRecording() {
+    clearInterval(timer);
+    if (recorder && recorder.state !== 'inactive') {
+      recorder.stop();
+    }
+    document.getElementById('recBtn1').disabled = false;
+    document.getElementById('stopBtn1').disabled = true;
+  }
+
+  function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  async function submitForm() {
+    const tr = normalizeDigits(document.getElementById('trInput').value.trim());
+    if (!tr || !STUDENTS_BY_TR[tr]) {
+      alert("Please enter a valid TR Number first.");
+      return;
+    }
+    if (!audioBlob) {
+      alert("Please record your speaking answer before submitting.");
+      return;
+    }
+
+    const correctAnswers = {
+      q1: "مَا",
+      q2: "كَيْفَ",
+      q3: "مِنْ أَيْنَ",
+      q4: "أَيْنَ",
+      q5: "مَاذَا",
+      q6: "أَعْمَلُ",
+      q7: "تَعْمَلُ",
+      q8: "تَعْمَلِينَ",
+      q9: "يَعْمَلُ",
+      q10: "تَعْمَلُ"
+    };
+
+    let mcq1Score = 0;
+    let mcq2Score = 0;
+
+    for (let i = 1; i <= 10; i++) {
+      const selected = document.querySelector(`input[name="q${i}"]:checked`);
+      if (!selected) {
+        alert(`Please answer Question ${i <= 5 ? i : i - 5} in Section ${i <= 5 ? '2' : '3'}.`);
+        return;
+      }
+      if (selected.value === correctAnswers[`q${i}`]) {
+        if (i <= 5) mcq1Score++;
+        else mcq2Score++;
+      }
+    }
+
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('loader').style.display = 'block';
+
+    const speakingBase64 = await blobToBase64(audioBlob);
+
+    const payload = {
+      tr: tr,
+      durationSeconds: recordedSeconds,
+      speakingAudioBase64: speakingBase64,
+      speakingMimeType: "audio/webm",
+      mcq1Score: mcq1Score,
+      mcq2Score: mcq2Score
+    };
+
+    try {
+      const response = await fetch(SCRIPT_URL, {
+        method: "POST",
+        redirect: "follow",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(payload)
+      });
+      const res = await response.json();
+      document.getElementById('loader').style.display = 'none';
+
+      if (res.success) {
+        document.getElementById('resultCard').style.display = 'block';
+        document.getElementById('resultHeader').innerText = `نتيجة: ${res.studentName} (${res.division})`;
+        document.getElementById('finalBadge').innerText = `${res.totalScore} / 30`;
+        document.getElementById('resSpeaking').innerText = `${res.speakingScore} / 20`;
+        document.getElementById('resMcq1').innerText = `${res.mcq1Score} / 5`;
+        document.getElementById('resMcq2').innerText = `${res.mcq2Score} / 5`;
+        document.getElementById('resTotal').innerText = `${res.totalScore} / 30`;
+        document.getElementById('fbArabic').innerText = res.remarksAr;
+        document.getElementById('fbEnglish').innerText = res.remarksEn;
+        document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
+      } else {
+        alert("Grading Error: " + res.error);
+        document.getElementById('submitBtn').disabled = false;
+      }
+    } catch (err) {
+      document.getElementById('loader').style.display = 'none';
+      alert("Network Error: " + err.message);
+      document.getElementById('submitBtn').disabled = false;
+    }
+  }
+</script>
+</body>
+</html>
